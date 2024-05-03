@@ -5,7 +5,7 @@ import Chat from "./components/Chat";
 
 function App() {
   const [chatOpen, setChatOpen] = useState(true);
-  const [account, setAccount] = useState(false);
+  const [account, setAccount] = useState(true);
   const [haveAccount, setHaveAccount] = useState(true);
 
   return (
@@ -14,18 +14,18 @@ function App() {
         {account ? (
           <>
             <div
-              className={`w-full md:w-1/3 flex flex-col border-r-2 border-[#1e2930] ${
-                chatOpen ? "hidden md:block" : "block"
+              className={`w-full md:w-1/3 flex flex-col border-r-2 border-[#f0f3f4] dark:border-[#1e2930] ${
+                chatOpen ? "hidden md:flex" : "flex"
               }`}
             >
               <ChatList />
             </div>
             <div
               className={`w-full md:w-2/3 flex flex-col ${
-                chatOpen ? "block" : "hidden md:block"
+                chatOpen ? "flex" : "hidden md:flex"
               }`}
             >
-              <Chat />
+              <Chat setChatOpen={setChatOpen} />
             </div>
           </>
         ) : (

@@ -7,17 +7,20 @@ const ChatList = () => {
   return (
     <>
       {/* header */}
-      <div className="flex h-16 items-center border-b-2 border-[#1e2930] px-6 justify-between">
+      <div className="bg-[#f0f2f5] flex h-16 items-center border-b-2 border-[#f0f3f4] dark:border-[#1e2930] px-6 justify-between">
         <h1 className="text-xl font-black">Crypto Chat</h1>
         <button
-          className="rounded-full w-8 h-8 hover:bg-[#1f2c33]"
+          className="rounded-full w-8 h-8 hover:border hover:border-[#8697a0] hover:dark:bg-[#1f2c33] bg-[#f0f2f5]"
           onClick={handleAddChat}
         >
-          <MdAdd className="text-[#aebac1] w-full" size="1.5rem" />
+          <MdAdd
+            className="text-[#8697a0] dark:text-[#aebac1] w-full"
+            size="1.5rem"
+          />
         </button>
       </div>
       {/* search */}
-      <div className="flex h-12 items-center border-b-2 border-[#1e2930] px-3">
+      <div className="flex h-12 items-center border-b-2 border-[#f0f3f4] dark:border-[#1e2930] px-3">
         <form
           className="flex items-center w-full mx-auto"
           onSubmit={(e) => e.preventDefault()}
@@ -32,7 +35,7 @@ const ChatList = () => {
             <input
               type="text"
               id="search"
-              className="bg-gray-50 text-gray-900 text-sm rounded-md w-full ps-[3.25rem] p-1.5 dark:bg-[#1f2c33] dark:placeholder-[#8697a0] dark:text-white"
+              className="bg-[#f0f2f5] text-gray-900 text-sm rounded-md w-full ps-[3.25rem] p-1.5 dark:bg-[#1f2c33] dark:placeholder-[#8697a0] dark:text-white"
               placeholder="Cari teman..."
               required
             />
@@ -41,7 +44,7 @@ const ChatList = () => {
       </div>
       {/* chat list */}
       <div className="flex-1 overflow-y-auto">
-        <div className="flex p-3 overflow-x-auto border-b-2 border-[#1e2930] h-[4.5rem]">
+        <div className="flex p-3 overflow-x-auto border-b-2 border-[#f0f3f4] dark:border-[#1e2930] h-[4.5rem]">
           <img
             className="w-10 aspect-square my-auto object-cover rounded-full"
             src={dummy_avatar}

@@ -6,8 +6,10 @@ const Message = ({ text, sent }) => {
       <div className={`${sent ? "justify-end" : "justify-start"} flex w-full`}>
         <p
           className={`${
-            sent ? "bg-[#015d4b]" : "bg-[#1f2c33]"
-          } flex rounded-md text-start text-sm py-2 px-3 max-w-[calc(100%-8rem)] w-fit mb-1`}
+            sent
+              ? "bg-[#d9fdd2] dark:bg-[#015d4b]"
+              : "bg-white dark:bg-[#1f2c33]"
+          } flex rounded-md text-start text-sm py-2 px-3 max-w-[calc(100%-4rem)] md:max-w-[calc(100%-8rem)] w-fit mb-1`}
         >
           {text}
         </p>

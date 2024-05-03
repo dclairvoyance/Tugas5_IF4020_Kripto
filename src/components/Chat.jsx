@@ -1,26 +1,40 @@
 import { useEffect, useRef } from "react";
-import { MdSend } from "react-icons/md";
+import { MdArrowBack, MdSend } from "react-icons/md";
+import { PropTypes } from "prop-types";
 import dummy_avatar from "../assets/avatar.webp";
 import Message from "../components/Message";
 
-const Chat = () => {
+const Chat = ({ setChatOpen }) => {
   const lastMessageRef = useRef(null);
 
   useEffect(() => {
     lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
   }, []);
 
+  const handleBack = () => {
+    setChatOpen(false);
+  };
+
   const handleAddMessage = () => {};
 
   return (
     <>
       {/* header */}
-      <div className="flex h-16 items-center dark:bg-[#1f2c33] border-b-2 border-[#1e2930] py-3 px-6">
+      <div className="flex h-16 items-center bg-[#f0f2f5] dark:bg-[#1f2c33] border-b-2 border-[#f0f3f4] dark:border-[#1e2930] py-3 px-6">
+        <button
+          className="md:hidden block rounded-full w-8 h-8 hover:border hover:border-[#8697a0] hover:dark:bg-[#1f2c33] bg-[#f0f2f5]"
+          onClick={handleBack}
+        >
+          <MdArrowBack
+            className="text-[#8697a0] dark:text-[#aebac1] w-full"
+            size="1.5rem"
+          />
+        </button>
         <img
-          className="w-10 aspect-square my-auto object-cover rounded-full"
+          className="w-10 aspect-square my-auto object-cover rounded-full ml-3 md:ml-0"
           src={dummy_avatar}
         />
-        <div className="flex-col my-auto ml-3 w-[calc(100%-3.25rem)]">
+        <div className="flex-col my-auto ml-3 md:w-[calc(100%-3.25rem)] w-[calc(100%-6rem)]">
           <p className="text-start truncate text-md font-semibold">
             Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consectetur
             adipisicing elit. Assumenda a placeat expedita quibusdam, incidunt
@@ -36,7 +50,7 @@ const Chat = () => {
         </div>
       </div>
       {/* messages */}
-      <div className="h-full overflow-y-auto p-6">
+      <div className="h-full overflow-y-auto p-6 bg-[#efeae2] dark:bg-[#141d23]">
         <Message text="chat" sent={true} />
         <Message
           text="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam
@@ -69,7 +83,7 @@ const Chat = () => {
         <div ref={lastMessageRef}></div>
       </div>
       {/* message box */}
-      <div className="flex h-28 items-center bg-[#1f2c33] px-6">
+      <div className="flex h-28 items-center bg-[#f0f2f5] dark:bg-[#1f2c33] px-6">
         <form
           className="flex items-center w-full mx-auto justify-between"
           onSubmit={(e) => e.preventDefault()}
@@ -79,19 +93,26 @@ const Chat = () => {
           </label>
           <textarea
             id="message"
-            className="bg-gray-50 text-gray-900 text-sm rounded-md w-full py-2.5 px-4 dark:bg-[#2a3942] dark:placeholder-[#83949d] dark:text-white resize-none"
+            className="bg-white text-gray-900 text-sm rounded-md w-full py-2.5 px-4 dark:bg-[#2a3942] dark:placeholder-[#83949d] dark:text-white resize-none"
             placeholder="Tulis pesan..."
           />
           <button
-            className="rounded-md h-10 w-10 hover:bg-[#2a3942] ml-3"
+            className="rounded-md h-10 w-10 bg-[#f0f2f5] hover:border hover:border-[#8697a0] hover:dark:bg-[#2a3942] ml-3"
             onClick={handleAddMessage}
           >
-            <MdSend className="text-[#aebac1] w-full" size="1.5rem" />
+            <MdSend
+              className="text-[#8697a0] dark:text-[#aebac1] w-full"
+              size="1.5rem"
+            />
           </button>
         </form>
       </div>
     </>
   );
+};
+
+Chat.propTypes = {
+  setChatOpen: PropTypes.func.isRequired,
 };
 
 export default Chat;
