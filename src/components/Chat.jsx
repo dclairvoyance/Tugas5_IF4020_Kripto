@@ -97,7 +97,7 @@ const Chat = ({ setChatOpen }) => {
             placeholder="Tulis pesan..."
           />
           <button
-            className="rounded-md h-10 w-10 bg-[#f0f2f5] hover:border hover:border-[#8697a0] hover:dark:bg-[#2a3942] ml-3"
+            className="rounded-md h-10 w-10 bg-[#f0f2f5] dark:bg-[#1f2c33] hover:border hover:border-[#8697a0] hover:dark:bg-[#2a3942] ml-3"
             onClick={handleAddMessage}
           >
             <MdSend

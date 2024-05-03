@@ -7,10 +7,10 @@ const ChatList = () => {
   return (
     <>
       {/* header */}
-      <div className="bg-[#f0f2f5] flex h-16 items-center border-b-2 border-[#f0f3f4] dark:border-[#1e2930] px-6 justify-between">
+      <div className="bg-[#f0f2f5] dark:bg-[#1f2c33] flex h-16 items-center border-b-2 border-[#f0f3f4] dark:border-[#1e2930] px-6 justify-between">
         <h1 className="text-xl font-black">Crypto Chat</h1>
         <button
-          className="rounded-full w-8 h-8 hover:border hover:border-[#8697a0] hover:dark:bg-[#1f2c33] bg-[#f0f2f5]"
+          className="rounded-full w-8 h-8 hover:border hover:border-[#8697a0] hover:dark:bg-[#1f2c33] bg-[#f0f2f5] dark:bg-[#1f2c33]"
           onClick={handleAddChat}
         >
           <MdAdd
