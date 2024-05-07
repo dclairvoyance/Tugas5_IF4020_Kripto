@@ -1,26 +1,25 @@
 import Message from "../models/message.model.js";
 import Chat from "../models/chat.model.js";
 
-export const getFriends = async (req, res) => {
+export const getChats = async (req, res) => {
   try {
     const senderId = req.user._id;
 
-    // get friends
+    // get chats
     const chats = await Chat.find({ users: senderId }).populate({
       path: "users",
       select: "-password",
     });
-    const friends = chats.map((chat) =>
-      chat.users.find((user) => user._id.toString() !== senderId.toString())
-    );
 
     // send response
     res.status(200).json({
-      message: "Friends fetched",
-      friends,
+      message: "Chats fetched",
+      chats: chats.map((chat) =>
+        chat.users.find((user) => user._id.toString() !== senderId.toString())
+      ),
     });
   } catch (error) {
-    console.error(`Error in get friends controller: ${error.message}`);
-    res.status(500).json({ message: "Internal server error" });
+    console.error(`Error in get chats controller: ${error.message}`);
+    res.status(500).json({ error: "Internal server error" });
   }
 };

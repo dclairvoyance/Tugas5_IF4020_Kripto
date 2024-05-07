@@ -1,6 +1,11 @@
 import { PropTypes } from "prop-types";
+import useAuth from "../stores/useAuth";
 
-const Message = ({ text, sent }) => {
+const Message = ({ message }) => {
+  const { authUser } = useAuth();
+
+  const sent = message.senderId === authUser._id;
+
   return (
     <div className="flex flex-col mb-3">
       <div className={`${sent ? "justify-end" : "justify-start"} flex w-full`}>
@@ -11,7 +16,7 @@ const Message = ({ text, sent }) => {
               : "bg-white dark:bg-[#1f2c33]"
           } flex rounded-md text-start text-sm py-2 px-3 max-w-[calc(100%-4rem)] md:max-w-[calc(100%-8rem)] w-fit mb-1`}
         >
-          {text}
+          {message.message}
         </p>
       </div>
       <span
@@ -26,8 +31,14 @@ const Message = ({ text, sent }) => {
 };
 
 Message.propTypes = {
-  text: PropTypes.string.isRequired,
-  sent: PropTypes.bool.isRequired,
+  message: PropTypes.shape({
+    _id: PropTypes.string,
+    senderId: PropTypes.string,
+    receiverId: PropTypes.string,
+    message: PropTypes.string,
+    createdAt: PropTypes.string,
+    updatedAt: PropTypes.string,
+  }),
 };
 
 export default Message;
