@@ -3,17 +3,17 @@ import Chat from "../components/Chat";
 import ChatList from "../components/ChatList";
 import NoChatSelected from "../components/NoChatSelected";
 import useChat from "../stores/useChat";
+import useWindow from "../stores/useWindow";
 
 const Home = () => {
-  const [chatOpen, setChatOpen] = useState(true);
-
+  const { chatOpen } = useWindow();
   const { selectedChat, setSelectedChat } = useChat();
 
   useEffect(() => {
     return () => {
       setSelectedChat(null);
     };
-  }, []);
+  }, [setSelectedChat]);
 
   return (
     <>
@@ -29,11 +29,7 @@ const Home = () => {
           chatOpen ? "flex" : "hidden md:flex"
         }`}
       >
-        {!selectedChat ? (
-          <NoChatSelected />
-        ) : (
-          <Chat setChatOpen={setChatOpen} />
-        )}
+        {!selectedChat ? <NoChatSelected /> : <Chat />}
       </div>
     </>
   );

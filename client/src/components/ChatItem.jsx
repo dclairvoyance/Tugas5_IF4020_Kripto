@@ -1,8 +1,11 @@
 import dummy_avatar from "../assets/avatar.webp";
 import useChat from "../stores/useChat";
+import useWindow from "../stores/useWindow";
 
 const ChatItem = ({ chat }) => {
   const { selectedChat, setSelectedChat } = useChat();
+  const { setChatOpen } = useWindow();
+
   const isSelected = selectedChat?._id === chat._id;
 
   return (
@@ -12,6 +15,7 @@ const ChatItem = ({ chat }) => {
       } hover:bg-[#f0f2f5] hover:dark:bg-[#1f2c33] flex p-3 overflow-x-auto cursor-pointer border-b-2 border-[#f0f3f4] dark:border-[#1e2930] h-[4.5rem]`}
       onClick={() => {
         setSelectedChat(chat);
+        setChatOpen(true);
       }}
     >
       <img
