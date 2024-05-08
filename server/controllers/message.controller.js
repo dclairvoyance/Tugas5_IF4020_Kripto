@@ -54,6 +54,7 @@ export const send = async (req, res) => {
         senderId: newMessage.senderId,
         receiverId: newMessage.receiverId,
         message: newMessage.message,
+        createdAt: newMessage.createdAt,
       },
     });
   } catch (error) {

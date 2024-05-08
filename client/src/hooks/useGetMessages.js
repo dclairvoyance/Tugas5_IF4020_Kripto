@@ -4,6 +4,7 @@ import useChat from "../stores/useChat";
 
 const useGetMessages = () => {
   const [loading, setLoading] = useState(false);
+
   const { messages, setMessages, selectedChat } = useChat();
 
   useEffect(() => {

@@ -3,11 +3,11 @@ import dummy_avatar from "../assets/avatar.webp";
 import useChat from "../stores/useChat";
 import useWindow from "../stores/useWindow";
 
-const ChatItem = ({ chat }) => {
+const UserItem = ({ user }) => {
   const { selectedChat, setSelectedChat, setNewChat } = useChat();
   const { setChatOpen } = useWindow();
 
-  const isSelected = selectedChat?._id === chat._id;
+  const isSelected = selectedChat?._id === user._id;
 
   return (
     <div
@@ -15,37 +15,26 @@ const ChatItem = ({ chat }) => {
         isSelected ? "bg-[#f0f2f5] dark:bg-[#1f2c33]" : ""
       } hover:bg-[#f0f2f5] hover:dark:bg-[#1f2c33] flex p-3 overflow-x-auto cursor-pointer border-b-2 border-[#f0f3f4] dark:border-[#1e2930] h-[4.5rem]`}
       onClick={() => {
-        setSelectedChat(chat);
-        setNewChat(false);
+        setSelectedChat(user);
+        setNewChat(true);
         setChatOpen(true);
       }}
     >
       <img
         className="w-10 aspect-square my-auto object-cover rounded-full"
-        src={chat.profilePicture || dummy_avatar}
+        src={user.profilePicture || dummy_avatar}
       />
       <div className="flex-col my-auto ml-3 w-[calc(100%-3.25rem)]">
-        <div className="flex justify-between">
-          <p className="text-start truncate mr-3 text-md font-semibold">
-            {chat.displayName}
-          </p>
-          <span className="flex text-xs items-center text-[#8697a0]">
-            10:00
-          </span>
-        </div>
-        <p className="text-start truncate text-xs text-[#8697a0]">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam
-          dolorum eligendi officiis sed voluptatem natus. Pariatur quae animi
-          nobis, porro vitae cumque ex, atque minima distinctio doloremque
-          cupiditate modi consequuntur!
+        <p className="text-start truncate mr-3 text-md font-semibold">
+          {user.displayName}
         </p>
       </div>
     </div>
   );
 };
 
-ChatItem.propTypes = {
-  chat: PropTypes.shape({
+UserItem.propTypes = {
+  user: PropTypes.shape({
     _id: PropTypes.string,
     displayName: PropTypes.string,
     username: PropTypes.string,
@@ -55,4 +44,4 @@ ChatItem.propTypes = {
   }),
 };
 
-export default ChatItem;
+export default UserItem;

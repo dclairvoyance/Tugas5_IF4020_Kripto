@@ -1,16 +1,22 @@
 import { useState } from "react";
 import { MdSend } from "react-icons/md";
 import useSendMessage from "../hooks/useSendMessage";
+import useChat from "../stores/useChat";
 
 const MessageBox = () => {
   const [message, setMessage] = useState("");
 
   const { loading, sendMessage } = useSendMessage();
+  const { selectedChat, chats, setChats, newChat, setNewChat } = useChat();
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!message) return;
     await sendMessage(message);
+    if (newChat) {
+      setChats([...chats, selectedChat]);
+      setNewChat(false);
+    }
     setMessage("");
   };
 

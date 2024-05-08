@@ -8,7 +8,7 @@ const BackButton = () => {
 
   return (
     <button
-      className="md:hidden block rounded-full w-8 h-8 hover:border hover:border-[#8697a0] hover:dark:bg-[#1f2c33] bg-[#f0f2f5]"
+      className="md:hidden block rounded-full w-8 h-8 hover:border hover:border-[#8697a0] hover:dark:bg-[#1f2c33] bg-[#f0f2f5] dark:bg-[#1f2c33]"
       onClick={() => {
         setChatOpen(false);
         setSelectedChat(null);

@@ -23,7 +23,7 @@ const Chat = () => {
         <BackButton />
         <img
           className="w-10 aspect-square my-auto object-cover rounded-full ml-3 md:ml-0"
-          src={dummy_avatar}
+          src={selectedChat.profilePicture || dummy_avatar}
         />
         <div className="flex-col my-auto ml-3 md:w-[calc(100%-3.25rem)] w-[calc(100%-6rem)]">
           <p className="text-start truncate text-md font-semibold">

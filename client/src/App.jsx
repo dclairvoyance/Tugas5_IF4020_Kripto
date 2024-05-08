@@ -25,6 +25,7 @@ function App() {
           path="/register"
           element={authUser ? <Navigate to="/" /> : <Register />}
         />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Toaster position="bottom-right" reverseOrder={false} />
     </div>

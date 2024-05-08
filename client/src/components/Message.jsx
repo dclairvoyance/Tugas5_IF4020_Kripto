@@ -1,10 +1,13 @@
 import { PropTypes } from "prop-types";
 import useAuth from "../stores/useAuth";
+import convertTime from "../utils/convertTime";
 
 const Message = ({ message }) => {
   const { authUser } = useAuth();
 
   const sent = message.senderId === authUser._id;
+
+  const formattedTime = convertTime(message.createdAt);
 
   return (
     <div className="flex flex-col mb-3">
@@ -24,7 +27,7 @@ const Message = ({ message }) => {
           sent ? "text-end mr-1.5" : "text-start ml-1.5"
         } text-xs text-[#8697a0]`}
       >
-        10:00
+        {formattedTime}
       </span>
     </div>
   );
