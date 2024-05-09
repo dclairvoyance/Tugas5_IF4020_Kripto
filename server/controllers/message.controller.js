@@ -1,5 +1,6 @@
 import Message from "../models/message.model.js";
 import Chat from "../models/chat.model.js";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 
 export const get = async (req, res) => {
   try {
@@ -45,6 +46,12 @@ export const send = async (req, res) => {
     });
     chat.messages.push(newMessage._id);
     await Promise.all([chat.save(), newMessage.save()]);
+
+    // real-time messaging
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
 
     // send response
     res.status(201).json({

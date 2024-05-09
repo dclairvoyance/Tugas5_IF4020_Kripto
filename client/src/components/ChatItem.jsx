@@ -2,12 +2,15 @@ import { PropTypes } from "prop-types";
 import dummy_avatar from "../assets/avatar.webp";
 import useChat from "../stores/useChat";
 import useWindow from "../stores/useWindow";
+import useSocket from "../stores/useSocket";
 
 const ChatItem = ({ chat }) => {
   const { selectedChat, setSelectedChat, setNewChat } = useChat();
   const { setChatOpen } = useWindow();
+  const { onlineUsers } = useSocket();
 
   const isSelected = selectedChat?._id === chat._id;
+  const isOnline = onlineUsers.includes(chat._id);
 
   return (
     <div
@@ -34,10 +37,7 @@ const ChatItem = ({ chat }) => {
           </span>
         </div>
         <p className="text-start truncate text-xs text-[#8697a0]">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam
-          dolorum eligendi officiis sed voluptatem natus. Pariatur quae animi
-          nobis, porro vitae cumque ex, atque minima distinctio doloremque
-          cupiditate modi consequuntur!
+          {isOnline ? "Online" : "Offline"}
         </p>
       </div>
     </div>

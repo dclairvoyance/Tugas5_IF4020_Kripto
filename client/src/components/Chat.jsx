@@ -5,12 +5,14 @@ import MessageBox from "./MessageBox";
 import useGetMessages from "../hooks/useGetMessages";
 import BackButton from "./BackButton";
 import useChat from "../stores/useChat";
+import useListenMessages from "../hooks/useListenMessages";
 
 const Chat = () => {
   const lastMessageRef = useRef(null);
 
   const { loading, messages } = useGetMessages();
   const { selectedChat } = useChat();
+  useListenMessages();
 
   useEffect(() => {
     lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
