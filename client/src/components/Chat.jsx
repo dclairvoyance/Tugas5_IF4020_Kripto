@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import dummy_avatar from "../assets/avatar.webp";
-import Message from "../components/Message";
+import Message from "./Message";
 import MessageBox from "./MessageBox";
 import useGetMessages from "../hooks/useGetMessages";
 import BackButton from "./BackButton";
@@ -15,7 +15,9 @@ const Chat = () => {
   useListenMessages();
 
   useEffect(() => {
-    lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    setTimeout(() => {
+      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   }, [messages]);
 
   return (

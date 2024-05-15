@@ -1,6 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import useChat from "../stores/useChat";
+import { encrypt, stringToHex } from "../utils/delazi";
 
 const useSendMessage = () => {
   const [loading, setLoading] = useState(false);
@@ -10,14 +11,17 @@ const useSendMessage = () => {
   const sendMessage = async (message) => {
     setLoading(true);
     try {
+      const encrypted = encrypt(
+        stringToHex(JSON.stringify({ message })),
+        import.meta.env.VITE_BLOCK_CIPHER_EXTERNAL_KEY
+      );
+
       const res = await fetch(`/api/messages/send/${selectedChat._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          message,
-        }),
+        body: JSON.stringify({ encrypted }),
       });
       const data = await res.json();
       if (data.error) {

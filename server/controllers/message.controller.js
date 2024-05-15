@@ -1,6 +1,7 @@
 import Message from "../models/message.model.js";
 import Chat from "../models/chat.model.js";
 import { getReceiverSocketId, io } from "../socket/socket.js";
+import { decrypt, hexToString } from "../utils/delazi.js";
 
 export const get = async (req, res) => {
   try {
@@ -25,7 +26,14 @@ export const get = async (req, res) => {
 export const send = async (req, res) => {
   try {
     const { receiverId } = req.params;
-    const { message } = req.body;
+
+    const { encrypted } = req.body;
+    const decrypted = hexToString(
+      decrypt(encrypted, process.env.VITE_BLOCK_CIPHER_EXTERNAL_KEY)
+    );
+    const parsed = JSON.parse(decrypted.replace(/Z*$/, ""));
+    const { message } = parsed;
+
     const senderId = req.user._id;
 
     // check if chat exists

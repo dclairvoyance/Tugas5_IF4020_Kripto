@@ -1,10 +1,16 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
+import { decrypt, hexToString } from "../utils/delazi.js";
 
 export const register = async (req, res) => {
   try {
-    const { displayName, username, password, confirmPassword } = req.body;
+    const { encrypted } = req.body;
+    const decrypted = hexToString(
+      decrypt(encrypted, process.env.VITE_BLOCK_CIPHER_EXTERNAL_KEY)
+    );
+    const parsed = JSON.parse(decrypted.replace(/Z*$/, ""));
+    const { displayName, username, password, confirmPassword } = parsed;
 
     // check password = confirmPassword
     if (password !== confirmPassword) {
@@ -55,7 +61,12 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { encrypted } = req.body;
+    const decrypted = hexToString(
+      decrypt(encrypted, process.env.VITE_BLOCK_CIPHER_EXTERNAL_KEY)
+    );
+    const parsed = JSON.parse(decrypted.replace(/Z*$/, ""));
+    const { username, password } = parsed;
 
     // check if user exists and password is correct
     const user = await User.findOne({ username });

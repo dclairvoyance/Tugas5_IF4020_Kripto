@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 
 const useGetUsers = () => {
   const [loading, setLoading] = useState(false);
+  // TODO: set global state
   const [users, setUsers] = useState([]);
 
   const getUsers = async (search) => {

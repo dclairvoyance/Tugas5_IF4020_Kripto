@@ -1,6 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import useAuth from "../stores/useAuth";
+import { encrypt, stringToHex } from "../utils/delazi";
 
 const useLogin = () => {
   const [loading, setLoading] = useState(false);
@@ -17,15 +18,17 @@ const useLogin = () => {
 
     setLoading(true);
     try {
+      const encrypted = encrypt(
+        stringToHex(JSON.stringify({ username, password })),
+        import.meta.env.VITE_BLOCK_CIPHER_EXTERNAL_KEY
+      );
+
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
+        body: JSON.stringify({ encrypted }),
       });
       const data = await res.json();
       if (data.error) {
