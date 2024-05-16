@@ -29,3 +29,12 @@ export const hexToString = (hex) => {
 export const mod256 = (int) => {
   return ((int % 256) + 256) % 256;
 };
+
+// check if shared key expired
+export const isSharedKeyExpired = (dateString) => {
+  const storedDate = new Date(dateString);
+  const currentDate = new Date();
+  const timeDifference = currentDate - storedDate;
+  const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
+  return dayDifference >= 7;
+};

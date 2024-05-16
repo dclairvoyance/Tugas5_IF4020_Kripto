@@ -1,4 +1,4 @@
-import { hexToString } from "./helpers";
+// import { hexToString } from "./helpers";
 
 // elliptic curve parameters for secp192r1
 // note: b is never used as addition always done to the point itself
@@ -102,7 +102,7 @@ const convertECtoBC = (input) => {
   for (let i = 0; i < inputHex.length; i++) {
     hash = (hash * 31n + BigInt(inputHex.charCodeAt(i))) % p;
   }
-  return hexToString(hash.toString(16).padStart(64, "0").slice(0, 48));
+  return hash.toString(16).padStart(64, "0").slice(0, 48);
 };
 
 // handshake process (1)
