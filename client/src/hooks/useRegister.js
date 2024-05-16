@@ -1,7 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import useAuth from "../stores/useAuth";
-import { encrypt, stringToHex } from "../utils/delazi";
+import { encrypt } from "../utils/delazi";
+import { stringToHex } from "../utils/helpers";
 
 const useRegister = () => {
   const [loading, setLoading] = useState(false);

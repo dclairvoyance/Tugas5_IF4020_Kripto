@@ -1,7 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import useChat from "../stores/useChat";
-import { encrypt, stringToHex } from "../utils/delazi";
+import { encrypt } from "../utils/delazi";
+import { stringToHex } from "../utils/helpers";
 
 const useSendMessage = () => {
   const [loading, setLoading] = useState(false);

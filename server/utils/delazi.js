@@ -1,6 +1,8 @@
 // Delazi Algorithm
 // Irreducible Polynomial x^8 + x^7 + x^5 + x^3 + 1
 
+import { mod256, stringToHex, hexPadding } from "./helpers.js";
+
 // constants: 16x16 of 1 byte in hex (ex: [0x63, ...])
 const SBOX = [
   0x63, 0x7c, 0xa6, 0xe5, 0x81, 0x6d, 0x20, 0x83, 0x12, 0xb0, 0x2e, 0xe6, 0xc2,
@@ -47,39 +49,6 @@ const INVERSE_SBOX = [
   0x4f, 0xd6, 0xa7, 0x9e, 0x85, 0xcb, 0x9f, 0x71, 0x5e, 0x9d, 0x54, 0xe4, 0xde,
   0x3b, 0x62, 0xa2, 0xd5, 0x2d, 0x59, 0x36, 0x5b, 0x29,
 ];
-
-// helpers
-const hexPadding = (inputHex) => {
-  let padding = (inputHex.length / 2) % 16;
-  let outputHex = inputHex;
-  if (padding != 0) {
-    outputHex += "5a".repeat(16 - padding);
-  }
-  return outputHex;
-};
-
-// convert string to hex
-export const stringToHex = (string) => {
-  return string
-    .split("")
-    .map((c) => c.charCodeAt(0).toString(16).padStart(2, "0"))
-    .join("");
-};
-
-// convert hex to string
-export const hexToString = (hex) => {
-  hex = hex.replace(/\s+/g, "").toLowerCase();
-  let string = "";
-  for (let i = 0; i < hex.length; i += 2) {
-    string += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-  }
-  return string;
-};
-
-// modulo 256 positive only
-const mod256 = (int) => {
-  return ((int % 256) + 256) % 256;
-};
 
 // key expander (64 bytes)
 const KEY_EXPANDER_STRING =

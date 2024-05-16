@@ -1,7 +1,8 @@
 import Message from "../models/message.model.js";
 import Chat from "../models/chat.model.js";
 import { getReceiverSocketId, io } from "../socket/socket.js";
-import { decrypt, hexToString } from "../utils/delazi.js";
+import { decrypt } from "../utils/delazi.js";
+import { hexToString } from "../utils/helpers.js";
 
 export const get = async (req, res) => {
   try {

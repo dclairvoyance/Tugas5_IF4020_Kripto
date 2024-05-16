@@ -1,7 +1,8 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
-import { decrypt, hexToString } from "../utils/delazi.js";
+import { decrypt } from "../utils/delazi.js";
+import { hexToString } from "../utils/helpers.js";
 
 export const register = async (req, res) => {
   try {
