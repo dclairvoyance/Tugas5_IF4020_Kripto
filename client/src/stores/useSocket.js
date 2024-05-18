@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import io from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
 import useAuth from "./useAuth";
 import { isSharedKeyExpired } from "../utils/helpers";
 import { generateKey, calculateSharedKey } from "../utils/ecdh";
@@ -27,10 +28,13 @@ const useSocket = create((set, get) => ({
         console.log("Client sends public key.");
         const { privateKey: privateKeyClient, publicKey: publicKeyClient } =
           generateKey();
-        newSocket.emit(
-          "sharePublicKey",
-          publicKeyClient.map((coord) => coord.toString())
-        );
+
+        const uuid = uuidv4();
+
+        newSocket.emit("sharePublicKey", {
+          publicKeyClient: publicKeyClient.map((coord) => coord.toString()),
+          uuid,
+        });
 
         newSocket.on("sharePublicKey", (publicKeyServer) => {
           console.log(
@@ -41,13 +45,16 @@ const useSocket = create((set, get) => ({
             privateKeyClient,
             publicKeyServer.map((str) => BigInt(str))
           );
+          const newSharedKey = {
+            uuid,
+            key: sharedKey,
+            createdAt: new Date().toISOString(),
+          };
           localStorage.setItem(
             "crypto-chat-shared-key",
-            JSON.stringify({
-              key: sharedKey,
-              createdAt: new Date().toISOString(),
-            })
+            JSON.stringify(newSharedKey)
           );
+          set({ sharedKey: newSharedKey });
 
           console.log("Client sends ack.");
           newSocket.emit("ackSharedKey", true);

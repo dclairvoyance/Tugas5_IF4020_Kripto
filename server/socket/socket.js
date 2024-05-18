@@ -3,6 +3,7 @@ import http from "http";
 import express from "express";
 import { isSharedKeyExpired } from "../utils/helpers.js";
 import { generateKey, calculateSharedKey } from "../utils/ecdh.js";
+import Key from "../models/key.model.js";
 
 const app = express();
 
@@ -22,9 +23,6 @@ export const getReceiverSocketId = (receiverId) => {
 // online users
 const socketUsers = {}; // { userId: socketId }
 
-// shared keys
-const sharedKeys = {}; // { userId: {key: sharedKey, date: createdAt} }
-
 io.on("connection", (socket) => {
   console.log("A user connected", socket.id);
 
@@ -35,8 +33,10 @@ io.on("connection", (socket) => {
   io.emit("getOnlineUsers", Object.keys(socketUsers));
 
   // handshake to share key
-  socket.on("sharePublicKey", (publicKeyClient) => {
-    if (!sharedKeys[userId] || isSharedKeyExpired(sharedKeys[userId]?.date)) {
+  socket.on("sharePublicKey", async ({ publicKeyClient, uuid }) => {
+    const sharedKey = await Key.findOne({ uuid });
+
+    if (!sharedKey || isSharedKeyExpired(sharedKey.createdAt)) {
       console.log("Server received public key from client:", publicKeyClient);
 
       const { privateKey: privateKeyServer, publicKey: publicKeyServer } =
@@ -46,18 +46,18 @@ io.on("connection", (socket) => {
         publicKeyServer.map((coord) => coord.toString())
       );
 
-      socket.on("ackSharedKey", (ack) => {
+      socket.on("ackSharedKey", async (ack) => {
         if (ack) {
           console.log("Server received ack from client.");
           const sharedKey = calculateSharedKey(
             privateKeyServer,
             publicKeyClient.map((str) => BigInt(str))
           );
-          sharedKeys[userId] = {
-            key: sharedKey,
-            createdAt: new Date().toISOString(),
-          };
-          console.log(sharedKey);
+          await Key.findOneAndUpdate(
+            { uuid },
+            { uuid, sharedKey },
+            { upsert: true, runValidators: true }
+          );
         }
       });
     }

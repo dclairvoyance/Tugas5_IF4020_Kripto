@@ -3,6 +3,7 @@ import Chat from "../models/chat.model.js";
 import { getReceiverSocketId, io } from "../socket/socket.js";
 import { decrypt } from "../utils/delazi.js";
 import { hexToString } from "../utils/helpers.js";
+import Key from "../models/key.model.js";
 
 export const get = async (req, res) => {
   try {
@@ -27,11 +28,11 @@ export const get = async (req, res) => {
 export const send = async (req, res) => {
   try {
     const { receiverId } = req.params;
+    const uuid = req.header("uuid");
+    const sharedKey = await Key.findOne({ uuid });
 
     const { encrypted } = req.body;
-    const decrypted = hexToString(
-      decrypt(encrypted, process.env.VITE_BLOCK_CIPHER_EXTERNAL_KEY)
-    );
+    const decrypted = hexToString(decrypt(encrypted, sharedKey.sharedKey));
     const parsed = JSON.parse(decrypted.replace(/Z*$/, ""));
     const { message } = parsed;
 

@@ -3,24 +3,28 @@ import toast from "react-hot-toast";
 import useChat from "../stores/useChat";
 import { encrypt } from "../utils/delazi";
 import { stringToHex } from "../utils/helpers";
+import useSocket from "../stores/useSocket";
 
 const useSendMessage = () => {
   const [loading, setLoading] = useState(false);
 
   const { messages, setMessages, selectedChat } = useChat();
+  const { sharedKey } = useSocket();
 
   const sendMessage = async (message) => {
     setLoading(true);
+
     try {
       const encrypted = encrypt(
         stringToHex(JSON.stringify({ message })),
-        import.meta.env.VITE_BLOCK_CIPHER_EXTERNAL_KEY
+        sharedKey.key
       );
 
       const res = await fetch(`/api/messages/send/${selectedChat._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          uuid: sharedKey.uuid || "",
         },
         body: JSON.stringify({ encrypted }),
       });
