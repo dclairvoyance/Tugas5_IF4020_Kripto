@@ -37,7 +37,7 @@ const Message = ({ message }) => {
       } else {
         setStoredMessage("");
       }
-    } else {
+    } else if (message.senderId !== authUser._id) {
       const data = convertStringToArrayOfBigints(message.message);
       setStoredMessage(decryptMessage(data, BigInt(privateKey)));
     }
