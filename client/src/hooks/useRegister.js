@@ -2,6 +2,8 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import useAuth from "../stores/useAuth";
 import { encrypt } from "../utils/delazi";
+import { generatePublicKey, generatePrivateKey } from "../utils/ecc";
+import { downloadKey } from "../utils/downloadKey";
 import { stringToHex } from "../utils/helpers";
 
 const useRegister = () => {
@@ -50,6 +52,12 @@ const useRegister = () => {
         throw new Error(data.error);
       }
       localStorage.setItem("crypto-chat-user", JSON.stringify(data.user));
+      let privateKey = generatePrivateKey();
+      let publicKey = generatePublicKey(privateKey);
+      localStorage.setItem("user-private-key", JSON.stringify(privateKey.toString()));
+      localStorage.setItem("user-public-key", JSON.stringify(publicKey.toString()));
+      downloadKey(username + ".ecpub", publicKey);
+      downloadKey(username + ".ecprv", privateKey);
       setAuthUser(data.user);
     } catch (error) {
       toast.error(error.message);

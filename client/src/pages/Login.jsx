@@ -10,6 +10,24 @@ const Login = () => {
 
   const { loading, login } = useLogin();
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const content = reader.result;
+        console.log("File contents:", content);
+        localStorage.setItem("user-private-key", JSON.stringify(content));
+      };
+
+      reader.onerror = () => {
+        console.error("Error reading file.");
+      };
+
+      reader.readAsText(file);
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login(input);
@@ -47,6 +65,7 @@ const Login = () => {
           value={input.password}
           onChange={(e) => setInput({ ...input, password: e.target.value })}
         />
+        <input type="file" onChange={handleFileChange} />
         <button
           className="flex items-center justify-center bg-[#015d4b] rounded-md p-3  mb-2 font-semibold"
           disabled={loading}

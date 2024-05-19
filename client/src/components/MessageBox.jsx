@@ -5,14 +5,36 @@ import useChat from "../stores/useChat";
 
 const MessageBox = () => {
   const [message, setMessage] = useState("");
+  const [pubKey, setPubKey] = useState([]);
 
   const { loading, sendMessage } = useSendMessage();
   const { selectedChat, chats, setChats, newChat, setNewChat } = useChat();
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const contents = reader.result;
+        const contentArr = contents.split(',');
+        console.log("File contents:", contentArr);
+        setPubKey(contentArr);
+      };
+
+      reader.onerror = () => {
+        console.error("Error reading file.");
+      };
+
+      reader.readAsText(file);
+    }
+  }
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!message) return;
-    await sendMessage(message);
+    // if (pubKey == []) return;
+    console.log(pubKey);
+    await sendMessage(message, pubKey);
     if (newChat) {
       setChats([...chats, selectedChat]);
       setNewChat(false);
@@ -29,6 +51,7 @@ const MessageBox = () => {
         <label htmlFor="message" className="sr-only">
           Message
         </label>
+        <input type="file" onChange={handleFileChange} />
         <textarea
           id="message"
           className="bg-white text-gray-900 text-sm rounded-md w-full py-2.5 px-4 dark:bg-[#2a3942] dark:placeholder-[#83949d] dark:text-white resize-none"
