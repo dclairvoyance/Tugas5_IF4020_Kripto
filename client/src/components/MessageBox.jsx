@@ -15,10 +15,18 @@ const MessageBox = () => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!message) return;
-    // if (pubKey == []) return;
+
+    // sign here
+    const privateSign = JSON.parse(localStorage.getItem("cc-private-sign"));
+    if (signature && !privateSign) {
+      toast.error("Private key (signature) is missing");
+      return;
+    }
+
+    // encrypt here
     const publicKeys = JSON.parse(localStorage.getItem("cc-public-keys"));
     if (!publicKeys) {
-      toast.error("Public key is missing");
+      toast.error("Public key (encryption) is missing");
       return;
     }
     await sendMessage(message, publicKeys[selectedChat._id]);

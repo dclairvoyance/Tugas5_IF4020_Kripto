@@ -34,7 +34,7 @@ const useSendMessage = () => {
 
     try {
       if (!pubKey) {
-        throw new Error("Public key is missing");
+        throw new Error("Public key (encryption) is missing");
       }
       const key = pubKey.map((str) => BigInt(str));
       const encryptedMessage = encryptMessage(message, key);

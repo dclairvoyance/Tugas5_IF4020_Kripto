@@ -77,7 +77,7 @@ const ChatList = () => {
         )}
       </div>
       {/* search */}
-      <div className="flex h-[5.4rem] items-center bg-[#f0f2f5] dark:bg-[#1f2c33] border-b-2 border-[#f0f3f4] dark:border-[#1e2930] p-3">
+      <div className="flex h-[5.3rem] items-center bg-[#f0f2f5] dark:bg-[#1f2c33] border-b-2 border-[#f0f3f4] dark:border-[#1e2930] p-3">
         <img
           className="w-10 aspect-square my-auto object-cover rounded-full ml-3 md:ml-0"
           src={authUser.profilePicture || dummy_avatar}
