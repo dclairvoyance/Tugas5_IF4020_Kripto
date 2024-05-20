@@ -4,15 +4,26 @@ import useChat from "../stores/useChat";
 import useWindow from "../stores/useWindow";
 import useSocket from "../stores/useSocket";
 import convertTime from "../utils/convertTime";
+import { useEffect, useState } from "react";
 
 const ChatItem = ({ chat }) => {
-  const { selectedChat, setSelectedChat, setNewChat } = useChat();
+  const [lastMessage, setLastMessage] = useState("");
+
+  const { chats, selectedChat, setSelectedChat, setNewChat } = useChat();
   const { setChatOpen } = useWindow();
   const { onlineUsers } = useSocket();
 
   const isSelected = selectedChat?._id === chat._id;
   const isOnline = onlineUsers.includes(chat._id);
   const formattedTime = convertTime(chat.updatedAt);
+
+  useEffect(() => {
+    const messages =
+      JSON.parse(localStorage.getItem("crypto-chat-messages")) || [];
+    setLastMessage(
+      messages.find((item) => item._id === chat.lastMessageId)?.message
+    );
+  }, [chats]);
 
   return (
     <div
@@ -39,7 +50,7 @@ const ChatItem = ({ chat }) => {
           </span>
         </div>
         <p className="text-start truncate text-xs text-[#8697a0]">
-          {chat.lastMessage}
+          {lastMessage}
         </p>
       </div>
     </div>
@@ -53,6 +64,8 @@ ChatItem.propTypes = {
     username: PropTypes.string,
     profilePicture: PropTypes.string,
     lastMessage: PropTypes.string,
+    lastMessageSender: PropTypes.string,
+    lastMessageId: PropTypes.string,
     updatedAt: PropTypes.string,
   }),
 };

@@ -6,7 +6,7 @@ import useSocket from "../stores/useSocket";
 const useGetChats = () => {
   const [loading, setLoading] = useState(false);
 
-  const { chats, setChats } = useChat();
+  const { messages, chats, setChats } = useChat();
   const { socket } = useSocket();
 
   const getChats = async () => {
@@ -27,7 +27,7 @@ const useGetChats = () => {
 
   useEffect(() => {
     getChats();
-  }, []);
+  }, [messages]);
 
   useEffect(() => {
     socket?.on("newMessage", () => {

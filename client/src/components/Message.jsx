@@ -39,11 +39,20 @@ const Message = ({ message }) => {
       if (item) {
         setStoredMessage(item.message);
       } else {
-        setStoredMessage("");
+        setStoredMessage("<failed to fetch old message>");
       }
     } else {
       const data = convertStringToArrayOfBigints(message.message);
-      setStoredMessage(decryptMessage(data, BigInt(privateKey)));
+      const decrypted = decryptMessage(data, BigInt(privateKey));
+      setStoredMessage(decrypted);
+      const newMessage = { ...message, message: decrypted };
+      const storedMessages =
+        JSON.parse(localStorage.getItem("crypto-chat-messages")) || [];
+      const newStoredMessage = [...storedMessages, newMessage];
+      localStorage.setItem(
+        "crypto-chat-messages",
+        JSON.stringify(newStoredMessage)
+      );
     }
   }, [message]);
 

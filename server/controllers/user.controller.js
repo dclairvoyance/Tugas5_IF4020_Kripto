@@ -62,6 +62,9 @@ export const getChats = async (req, res) => {
         return {
           _id: otherUser._id,
           lastMessage: chat.messages[chat.messages.length - 1].message || "",
+          lastMessageSender:
+            chat.messages[chat.messages.length - 1].senderId || "",
+          lastMessageId: chat.messages[chat.messages.length - 1]._id || "",
           updatedAt: chat.messages[chat.messages.length - 1].createdAt || "",
           displayName: otherUser.displayName,
           username: otherUser.username,
