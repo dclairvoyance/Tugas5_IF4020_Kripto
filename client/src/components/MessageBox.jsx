@@ -17,7 +17,6 @@ const MessageBox = () => {
       reader.onload = () => {
         const contents = reader.result;
         const contentArr = contents.split(',');
-        console.log("File contents:", contentArr);
         setPubKey(contentArr);
       };
 
@@ -33,7 +32,6 @@ const MessageBox = () => {
     e.preventDefault();
     if (!message) return;
     // if (pubKey == []) return;
-    console.log(pubKey);
     await sendMessage(message, pubKey);
     if (newChat) {
       setChats([...chats, selectedChat]);
