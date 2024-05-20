@@ -58,12 +58,9 @@ const useSendMessage = () => {
       }
       data.messageSent.message = message;
       const storedMessages =
-        JSON.parse(localStorage.getItem("crypto-chat-messages")) || [];
+        JSON.parse(localStorage.getItem("cc-messages")) || [];
       const newStoredMessage = [...storedMessages, data.messageSent];
-      localStorage.setItem(
-        "crypto-chat-messages",
-        JSON.stringify(newStoredMessage)
-      );
+      localStorage.setItem("cc-messages", JSON.stringify(newStoredMessage));
       setMessages([...messages, data.messageSent]);
     } catch (error) {
       toast.error(error.message);

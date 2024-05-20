@@ -51,11 +51,11 @@ const useRegister = () => {
       if (data.error) {
         throw new Error(data.error);
       }
-      localStorage.setItem("crypto-chat-user", JSON.stringify(data.user));
+      localStorage.setItem("cc-user", JSON.stringify(data.user));
       let privateKey = generatePrivateKey();
       let publicKey = generatePublicKey(privateKey);
       localStorage.setItem(
-        "crypto-chat-private-key",
+        "cc-private-key",
         JSON.stringify(privateKey.toString())
       );
       downloadKey(username + ".ecpub", publicKey);

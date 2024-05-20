@@ -9,9 +9,7 @@ const Message = ({ message }) => {
   const [storedMessage, setStoredMessage] = useState("");
 
   const sent = message.senderId === authUser._id;
-  const privateKey = JSON.parse(
-    localStorage.getItem("crypto-chat-private-key")
-  );
+  const privateKey = JSON.parse(localStorage.getItem("cc-private-key"));
   const formattedTime = convertTime(message.createdAt);
 
   const convertStringToArrayOfBigints = (str) => {
@@ -33,7 +31,7 @@ const Message = ({ message }) => {
   useEffect(() => {
     if (sent) {
       const item =
-        JSON.parse(localStorage.getItem("crypto-chat-messages"))?.find(
+        JSON.parse(localStorage.getItem("cc-messages"))?.find(
           (item) => item._id === message._id
         ) || null;
       if (item) {
@@ -47,12 +45,9 @@ const Message = ({ message }) => {
       setStoredMessage(decrypted);
       const newMessage = { ...message, message: decrypted };
       const storedMessages =
-        JSON.parse(localStorage.getItem("crypto-chat-messages")) || [];
+        JSON.parse(localStorage.getItem("cc-messages")) || [];
       const newStoredMessage = [...storedMessages, newMessage];
-      localStorage.setItem(
-        "crypto-chat-messages",
-        JSON.stringify(newStoredMessage)
-      );
+      localStorage.setItem("cc-messages", JSON.stringify(newStoredMessage));
     }
   }, [message]);
 

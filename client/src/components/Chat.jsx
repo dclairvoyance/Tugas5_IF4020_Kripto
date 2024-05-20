@@ -6,16 +6,20 @@ import useGetMessages from "../hooks/useGetMessages";
 import BackButton from "./BackButton";
 import useChat from "../stores/useChat";
 import useListenMessages from "../hooks/useListenMessages";
+import FileInput from "./FileInput";
 
 const Chat = () => {
   const lastMessageRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const fileEcInputRef = useRef(null);
+  const fileScInputRef = useRef(null);
+
   const [publicKeys, setPublicKeys] = useState({});
+  const [publicSigns, setPublicSigns] = useState({});
 
   const { loading, messages } = useGetMessages();
   const { selectedChat } = useChat();
 
-  const handleFileChange = (e) => {
+  const handleFileEcChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -25,10 +29,31 @@ const Chat = () => {
 
         const newPublicKeys = { ...publicKeys, [selectedChat._id]: contentArr };
         setPublicKeys(newPublicKeys);
-        localStorage.setItem(
-          "crypto-chat-public-keys",
-          JSON.stringify(newPublicKeys)
-        );
+        localStorage.setItem("cc-public-keys", JSON.stringify(newPublicKeys));
+      };
+
+      reader.onerror = () => {
+        console.error("Error reading file.");
+      };
+
+      reader.readAsText(file);
+    }
+  };
+
+  const handleFileScChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const contents = reader.result;
+        const contentArr = contents.split(",");
+
+        const newPublicSigns = {
+          ...publicSigns,
+          [selectedChat._id]: contentArr,
+        };
+        setPublicSigns(newPublicSigns);
+        localStorage.setItem("cc-public-signs", JSON.stringify(newPublicSigns));
       };
 
       reader.onerror = () => {
@@ -48,17 +73,16 @@ const Chat = () => {
   }, [messages]);
 
   useEffect(() => {
-    if (!publicKeys[selectedChat._id] && fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  }, [selectedChat]);
-
-  useEffect(() => {
-    const storedPublicKeys = JSON.parse(
-      localStorage.getItem("crypto-chat-public-keys")
-    );
+    const storedPublicKeys = JSON.parse(localStorage.getItem("cc-public-keys"));
     if (storedPublicKeys) {
       setPublicKeys(storedPublicKeys);
+    }
+
+    const storedPublicSigns = JSON.parse(
+      localStorage.getItem("cc-public-signs")
+    );
+    if (storedPublicSigns) {
+      setPublicSigns(storedPublicSigns);
     }
   }, []);
 
@@ -76,11 +100,19 @@ const Chat = () => {
             {selectedChat.displayName}
           </p>
         </div>
-        {!publicKeys[selectedChat._id] ? (
-          <input ref={fileInputRef} type="file" onChange={handleFileChange} />
-        ) : (
-          <p className="w-40">ecpub found</p>
-        )}
+
+        <div className="flex gap-3 items-center">
+          <FileInput
+            handleOnChangeParent={handleFileScChange}
+            fileName="scpub"
+            isPublicExists={publicSigns[selectedChat._id]?.length > 0}
+          />
+          <FileInput
+            handleOnChangeParent={handleFileEcChange}
+            fileName="ecpub"
+            isPublicExists={publicKeys[selectedChat._id]?.length > 0}
+          />
+        </div>
       </div>
       {/* messages */}
       <div className="h-full overflow-y-auto p-6 bg-[#efeae2] dark:bg-[#141d23]">

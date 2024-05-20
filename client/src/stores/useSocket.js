@@ -8,7 +8,7 @@ import { generateKey, calculateSharedKey } from "../utils/ecdh";
 const useSocket = create((set, get) => ({
   socket: null,
   onlineUsers: [],
-  sharedKey: JSON.parse(localStorage.getItem("crypto-chat-shared-key")) || null,
+  sharedKey: JSON.parse(localStorage.getItem("cc-shared-key")) || null,
 
   initializeSocket: () => {
     const { authUser } = useAuth.getState();
@@ -50,10 +50,7 @@ const useSocket = create((set, get) => ({
             key: sharedKey,
             createdAt: new Date().toISOString(),
           };
-          localStorage.setItem(
-            "crypto-chat-shared-key",
-            JSON.stringify(newSharedKey)
-          );
+          localStorage.setItem("cc-shared-key", JSON.stringify(newSharedKey));
           set({ sharedKey: newSharedKey });
 
           console.log("Client sends ack.");

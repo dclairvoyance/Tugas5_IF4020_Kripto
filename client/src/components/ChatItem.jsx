@@ -18,8 +18,7 @@ const ChatItem = ({ chat }) => {
   const formattedTime = convertTime(chat.updatedAt);
 
   useEffect(() => {
-    const messages =
-      JSON.parse(localStorage.getItem("crypto-chat-messages")) || [];
+    const messages = JSON.parse(localStorage.getItem("cc-messages")) || [];
     setLastMessage(
       messages.find((item) => item._id === chat.lastMessageId)?.message
     );

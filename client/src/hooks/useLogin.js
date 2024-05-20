@@ -35,7 +35,7 @@ const useLogin = () => {
       if (data.error) {
         throw new Error(data.error);
       }
-      localStorage.setItem("crypto-chat-user", JSON.stringify(data.user));
+      localStorage.setItem("cc-user", JSON.stringify(data.user));
       setAuthUser(data.user);
     } catch (error) {
       toast.error(error.message);

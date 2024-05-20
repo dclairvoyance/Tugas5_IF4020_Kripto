@@ -16,10 +16,7 @@ const Login = () => {
       const reader = new FileReader();
       reader.onload = () => {
         const content = reader.result;
-        localStorage.setItem(
-          "crypto-chat-private-key",
-          JSON.stringify(content)
-        );
+        localStorage.setItem("cc-private-key", JSON.stringify(content));
       };
 
       reader.onerror = () => {
@@ -36,7 +33,7 @@ const Login = () => {
       const reader = new FileReader();
       reader.onload = () => {
         const content = JSON.parse(reader.result);
-        localStorage.setItem("crypto-chat-messages", JSON.stringify(content));
+        localStorage.setItem("cc-messages", JSON.stringify(content));
       };
 
       reader.onerror = () => {
