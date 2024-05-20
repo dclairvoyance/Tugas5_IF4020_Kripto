@@ -67,7 +67,7 @@ const Register = () => {
           htmlFor="confirmPassword"
           className="text-sm font-bold text-start text-gray-600"
         >
-          Password
+          Confirm Password
         </label>
         <input
           type="password"

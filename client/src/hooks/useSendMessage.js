@@ -12,24 +12,35 @@ const useSendMessage = () => {
   const { messages, setMessages, selectedChat } = useChat();
   const { sharedKey } = useSocket();
 
-
   const convertArrayToBigintString = (arr) => {
-    return '[' + arr.map((outerArray) => 
-      '[' + outerArray.map((innerArray) => 
-        '[' + innerArray.join(',') + ']'
-      ).join(', ') + ']'
-    ).join(', ') + ']';
-  }
+    return (
+      "[" +
+      arr
+        .map(
+          (outerArray) =>
+            "[" +
+            outerArray
+              .map((innerArray) => "[" + innerArray.join(",") + "]")
+              .join(", ") +
+            "]"
+        )
+        .join(", ") +
+      "]"
+    );
+  };
 
   const sendMessage = async (message, pubKey) => {
     setLoading(true);
 
     try {
-      const key = pubKey.map(str => BigInt(str));
-      const firstEncrypt = encryptMessage(message, key);
-      const result = convertArrayToBigintString(firstEncrypt);
-      const encrypted = encrypt(
-        stringToHex(JSON.stringify({ "message":result })),
+      if (!pubKey) {
+        throw new Error("Public key is missing");
+      }
+      const key = pubKey.map((str) => BigInt(str));
+      const encryptedMessage = encryptMessage(message, key);
+      const result = convertArrayToBigintString(encryptedMessage);
+      const encryptedBody = encrypt(
+        stringToHex(JSON.stringify({ message: result })),
         sharedKey.key
       );
 
@@ -39,16 +50,20 @@ const useSendMessage = () => {
           "Content-Type": "application/json",
           uuid: sharedKey.uuid || "",
         },
-        body: JSON.stringify({ encrypted }),
+        body: JSON.stringify({ encryptedBody }),
       });
       const data = await res.json();
       if (data.error) {
         throw new Error(data.error);
       }
       data.messageSent.message = message;
-      const storedMessages = JSON.parse(localStorage.getItem("user-message")) || [];
-      const newLocalMessage = [...storedMessages, data];
-      localStorage.setItem("user-message", JSON.stringify(newLocalMessage));
+      const storedMessages =
+        JSON.parse(localStorage.getItem("crypto-chat-messages")) || [];
+      const newStoredMessage = [...storedMessages, data.messageSent];
+      localStorage.setItem(
+        "crypto-chat-messages",
+        JSON.stringify(newStoredMessage)
+      );
       setMessages([...messages, data.messageSent]);
     } catch (error) {
       toast.error(error.message);

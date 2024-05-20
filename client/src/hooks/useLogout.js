@@ -21,14 +21,15 @@ const useLogout = () => {
       if (data.error) {
         throw new Error(data.error);
       }
-      const storedMessages = localStorage.getItem("user-message") || null;
-      if(storedMessages){
-        downloadKey("checkpoint.txt", storedMessages)
+      const storedMessages =
+        localStorage.getItem("crypto-chat-messages") || null;
+      if (storedMessages) {
+        downloadKey("checkpoint.txt", storedMessages);
       }
       localStorage.removeItem("crypto-chat-user");
-      localStorage.removeItem("user-private-key");
-      localStorage.removeItem("user-public-key");
-      localStorage.removeItem("user-message");
+      localStorage.removeItem("crypto-chat-public-keys");
+      localStorage.removeItem("crypto-chat-messages");
+      localStorage.removeItem("crypto-chat-private-key");
       setAuthUser(null);
     } catch (error) {
       toast.error(error.message);

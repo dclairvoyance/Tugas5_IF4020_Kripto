@@ -1,5 +1,5 @@
 import { PropTypes } from "prop-types";
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import useAuth from "../stores/useAuth";
 import convertTime from "../utils/convertTime";
 import { decryptMessage } from "../utils/ecc";
@@ -9,39 +9,44 @@ const Message = ({ message }) => {
   const [storedMessage, setStoredMessage] = useState("");
 
   const sent = message.senderId === authUser._id;
-  const privateKey = JSON.parse(localStorage.getItem('user-private-key'));
+  const privateKey = JSON.parse(
+    localStorage.getItem("crypto-chat-private-key")
+  );
   const formattedTime = convertTime(message.createdAt);
 
   const convertStringToArrayOfBigints = (str) => {
     const jsonString = str.replace(/\b\d+\b/g, (match) => `"${match}"`);
-    const nestedArray = JSON.parse(jsonString);
+    const jsonArray = JSON.parse(jsonString);
     const convertToBigint = (value) => {
       if (Array.isArray(value)) {
         return value.map(convertToBigint);
-      } else if (typeof value === 'string') {
+      } else if (typeof value === "string") {
         return BigInt(value);
       } else {
-        throw new TypeError('Invalid element type');
+        throw new TypeError("Invalid element type");
       }
     };
-  
-    return convertToBigint(nestedArray);
+
+    return convertToBigint(jsonArray);
   };
-  
+
   useEffect(() => {
     if (sent) {
-      const itemId = message._id;
-      const item = JSON.parse(localStorage.getItem('user-message'))?.find(item => item.messageSent._id === itemId) || null;
+      const item =
+        JSON.parse(localStorage.getItem("crypto-chat-messages"))?.find(
+          (item) => item._id === message._id
+        ) || null;
       if (item) {
-        setStoredMessage(item.messageSent.message);
+        setStoredMessage(item.message);
       } else {
         setStoredMessage("");
       }
-    } else if (message.receiverId === authUser._id) {
+    } else {
       const data = convertStringToArrayOfBigints(message.message);
       setStoredMessage(decryptMessage(data, BigInt(privateKey)));
     }
   }, [message]);
+
   return (
     <div className="flex flex-col mb-3">
       <div className={`${sent ? "justify-end" : "justify-start"} flex w-full`}>

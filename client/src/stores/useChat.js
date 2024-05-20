@@ -9,6 +9,14 @@ const useChat = create((set) => ({
   setMessages: (messages) => set({ messages }),
   newChat: false,
   setNewChat: (newChat) => set({ newChat }),
+  publicKeys: {},
+  addPublicKeys: (key, value) =>
+    set((state) => ({
+      publicKeys: {
+        ...state.publicKeys,
+        [key]: value,
+      },
+    })),
 }));
 
 export default useChat;

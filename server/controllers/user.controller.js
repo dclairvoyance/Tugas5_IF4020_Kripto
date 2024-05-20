@@ -39,17 +39,35 @@ export const getChats = async (req, res) => {
     const senderId = req.user._id;
 
     // get chats
-    const chats = await Chat.find({ users: senderId }).populate({
-      path: "users",
-      select: "-password",
-    });
+    const chats = await Chat.find({ users: senderId })
+      .populate({
+        path: "users",
+        select: "-password",
+      })
+      .populate({
+        path: "messages",
+      });
+
+    // sort based on latest message
+    chats.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
     // send response
     res.status(200).json({
       message: "Chats fetched",
-      chats: chats.map((chat) =>
-        chat.users.find((user) => user._id.toString() !== senderId.toString())
-      ),
+      chats: chats.map((chat) => {
+        const otherUser = chat.users.find(
+          (user) => user._id.toString() !== senderId.toString()
+        );
+
+        return {
+          _id: otherUser._id,
+          lastMessage: chat.messages[chat.messages.length - 1].message || "",
+          updatedAt: chat.messages[chat.messages.length - 1].createdAt || "",
+          displayName: otherUser.displayName,
+          username: otherUser.username,
+          profilePicture: otherUser.profilePicture,
+        };
+      }),
     });
   } catch (error) {
     console.error(`Error in get chats controller: ${error.message}`);

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import dummy_avatar from "../assets/avatar.webp";
 import Message from "./Message";
 import MessageBox from "./MessageBox";
@@ -9,9 +9,36 @@ import useListenMessages from "../hooks/useListenMessages";
 
 const Chat = () => {
   const lastMessageRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [publicKeys, setPublicKeys] = useState({});
 
   const { loading, messages } = useGetMessages();
   const { selectedChat } = useChat();
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const contents = reader.result;
+        const contentArr = contents.split(",");
+
+        const newPublicKeys = { ...publicKeys, [selectedChat._id]: contentArr };
+        setPublicKeys(newPublicKeys);
+        localStorage.setItem(
+          "crypto-chat-public-keys",
+          JSON.stringify(newPublicKeys)
+        );
+      };
+
+      reader.onerror = () => {
+        console.error("Error reading file.");
+      };
+
+      reader.readAsText(file);
+    }
+  };
+
   useListenMessages();
 
   useEffect(() => {
@@ -19,6 +46,21 @@ const Chat = () => {
       lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
     }, 100);
   }, [messages]);
+
+  useEffect(() => {
+    if (!publicKeys[selectedChat._id] && fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, [selectedChat]);
+
+  useEffect(() => {
+    const storedPublicKeys = JSON.parse(
+      localStorage.getItem("crypto-chat-public-keys")
+    );
+    if (storedPublicKeys) {
+      setPublicKeys(storedPublicKeys);
+    }
+  }, []);
 
   return (
     <>
@@ -34,6 +76,11 @@ const Chat = () => {
             {selectedChat.displayName}
           </p>
         </div>
+        {!publicKeys[selectedChat._id] ? (
+          <input ref={fileInputRef} type="file" onChange={handleFileChange} />
+        ) : (
+          <p className="w-40">ecpub found</p>
+        )}
       </div>
       {/* messages */}
       <div className="h-full overflow-y-auto p-6 bg-[#efeae2] dark:bg-[#141d23]">

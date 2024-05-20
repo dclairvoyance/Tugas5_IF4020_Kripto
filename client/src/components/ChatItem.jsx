@@ -3,6 +3,7 @@ import dummy_avatar from "../assets/avatar.webp";
 import useChat from "../stores/useChat";
 import useWindow from "../stores/useWindow";
 import useSocket from "../stores/useSocket";
+import convertTime from "../utils/convertTime";
 
 const ChatItem = ({ chat }) => {
   const { selectedChat, setSelectedChat, setNewChat } = useChat();
@@ -11,6 +12,7 @@ const ChatItem = ({ chat }) => {
 
   const isSelected = selectedChat?._id === chat._id;
   const isOnline = onlineUsers.includes(chat._id);
+  const formattedTime = convertTime(chat.updatedAt);
 
   return (
     <div
@@ -30,14 +32,14 @@ const ChatItem = ({ chat }) => {
       <div className="flex-col my-auto ml-3 w-[calc(100%-3.25rem)]">
         <div className="flex justify-between">
           <p className="text-start truncate mr-3 text-md font-semibold">
-            {chat.displayName}
+            {chat.displayName} {isOnline ? "(Online)" : "(Offline)"}
           </p>
           <span className="flex text-xs items-center text-[#8697a0]">
-            10:00
+            {formattedTime}
           </span>
         </div>
         <p className="text-start truncate text-xs text-[#8697a0]">
-          {isOnline ? "Online" : "Offline"}
+          {chat.lastMessage}
         </p>
       </div>
     </div>
@@ -50,7 +52,7 @@ ChatItem.propTypes = {
     displayName: PropTypes.string,
     username: PropTypes.string,
     profilePicture: PropTypes.string,
-    createdAt: PropTypes.string,
+    lastMessage: PropTypes.string,
     updatedAt: PropTypes.string,
   }),
 };

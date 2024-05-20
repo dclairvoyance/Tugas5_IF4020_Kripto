@@ -16,7 +16,10 @@ const Login = () => {
       const reader = new FileReader();
       reader.onload = () => {
         const content = reader.result;
-        localStorage.setItem("user-private-key", JSON.stringify(content));
+        localStorage.setItem(
+          "crypto-chat-private-key",
+          JSON.stringify(content)
+        );
       };
 
       reader.onerror = () => {
@@ -25,7 +28,7 @@ const Login = () => {
 
       reader.readAsText(file);
     }
-  }
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -33,7 +36,7 @@ const Login = () => {
       const reader = new FileReader();
       reader.onload = () => {
         const content = JSON.parse(reader.result);
-        localStorage.setItem("user-message", JSON.stringify(content));
+        localStorage.setItem("crypto-chat-messages", JSON.stringify(content));
       };
 
       reader.onerror = () => {
@@ -42,7 +45,7 @@ const Login = () => {
 
       reader.readAsText(file);
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,15 +79,23 @@ const Login = () => {
         <input
           type="password"
           id="password"
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md p-3 mt-1.5 mb-6"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md p-3 mt-1.5 mb-3"
           placeholder="Password"
           value={input.password}
           onChange={(e) => setInput({ ...input, password: e.target.value })}
         />
-        <p>Key</p>
-        <input type="file" onChange={handleKeyChange} />
-        <p>Save file</p>
-        <input type="file" onChange={handleFileChange} />
+        <p className="text-sm font-bold text-start text-gray-600">
+          Private Key
+        </p>
+        <input className="mt-1.5 mb-3" type="file" onChange={handleKeyChange} />
+        <p className="text-sm font-bold text-start text-gray-600">
+          Chat History
+        </p>
+        <input
+          className="mt-1.5 mb-3"
+          type="file"
+          onChange={handleFileChange}
+        />
         <button
           className="flex items-center justify-center bg-[#015d4b] rounded-md p-3  mb-2 font-semibold"
           disabled={loading}

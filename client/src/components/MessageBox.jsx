@@ -1,44 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdSend } from "react-icons/md";
 import useSendMessage from "../hooks/useSendMessage";
 import useChat from "../stores/useChat";
+import toast from "react-hot-toast";
 
 const MessageBox = () => {
   const [message, setMessage] = useState("");
-  const [pubKey, setPubKey] = useState([]);
 
   const { loading, sendMessage } = useSendMessage();
   const { selectedChat, chats, setChats, newChat, setNewChat } = useChat();
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const contents = reader.result;
-        const contentArr = contents.split(',');
-        setPubKey(contentArr);
-      };
-
-      reader.onerror = () => {
-        console.error("Error reading file.");
-      };
-
-      reader.readAsText(file);
-    }
-  }
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!message) return;
     // if (pubKey == []) return;
-    await sendMessage(message, pubKey);
+    const publicKeys = JSON.parse(
+      localStorage.getItem("crypto-chat-public-keys")
+    );
+    if (!publicKeys) {
+      toast.error("Public key is missing");
+      return;
+    }
+    await sendMessage(message, publicKeys[selectedChat._id]);
     if (newChat) {
       setChats([...chats, selectedChat]);
       setNewChat(false);
     }
     setMessage("");
   };
+
+  useEffect(() => {
+    if (selectedChat) {
+      setMessage("");
+    }
+  }, [selectedChat]);
 
   return (
     <div className="flex h-28 items-center bg-[#f0f2f5] dark:bg-[#1f2c33] px-6">
@@ -49,7 +44,6 @@ const MessageBox = () => {
         <label htmlFor="message" className="sr-only">
           Message
         </label>
-        <input type="file" onChange={handleFileChange} />
         <textarea
           id="message"
           className="bg-white text-gray-900 text-sm rounded-md w-full py-2.5 px-4 dark:bg-[#2a3942] dark:placeholder-[#83949d] dark:text-white resize-none"

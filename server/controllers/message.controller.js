@@ -31,8 +31,8 @@ export const send = async (req, res) => {
     const uuid = req.header("uuid");
     const sharedKey = await Key.findOne({ uuid });
 
-    const { encrypted } = req.body;
-    const decrypted = hexToString(decrypt(encrypted, sharedKey.sharedKey));
+    const { encryptedBody } = req.body;
+    const decrypted = hexToString(decrypt(encryptedBody, sharedKey.sharedKey));
     const parsed = JSON.parse(decrypted.replace(/Z*$/, ""));
     const { message } = parsed;
 

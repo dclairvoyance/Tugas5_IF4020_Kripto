@@ -54,8 +54,10 @@ const useRegister = () => {
       localStorage.setItem("crypto-chat-user", JSON.stringify(data.user));
       let privateKey = generatePrivateKey();
       let publicKey = generatePublicKey(privateKey);
-      localStorage.setItem("user-private-key", JSON.stringify(privateKey.toString()));
-      localStorage.setItem("user-public-key", JSON.stringify(publicKey.toString()));
+      localStorage.setItem(
+        "crypto-chat-private-key",
+        JSON.stringify(privateKey.toString())
+      );
       downloadKey(username + ".ecpub", publicKey);
       downloadKey(username + ".ecprv", privateKey);
       setAuthUser(data.user);
