@@ -29,7 +29,7 @@ const useSendMessage = () => {
     );
   };
 
-  const sendMessage = async (message, pubKey) => {
+  const sendMessage = async (message, signature, pubKey) => {
     setLoading(true);
 
     try {
@@ -40,7 +40,7 @@ const useSendMessage = () => {
       const encryptedMessage = encryptMessage(message, key);
       const result = convertArrayToBigintString(encryptedMessage);
       const encryptedBody = encrypt(
-        stringToHex(JSON.stringify({ message: result })),
+        stringToHex(JSON.stringify({ message: result, signature })),
         sharedKey.key
       );
 

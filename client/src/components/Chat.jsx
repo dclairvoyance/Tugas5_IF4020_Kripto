@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import dummy_avatar from "../assets/avatar.webp";
 import Message from "./Message";
 import MessageBox from "./MessageBox";
@@ -11,8 +11,7 @@ import FileInput from "./FileInput";
 const Chat = () => {
   const lastMessageRef = useRef(null);
 
-  const [publicKeys, setPublicKeys] = useState({});
-  const [publicSigns, setPublicSigns] = useState({});
+  const { publicKeys, setPublicKeys, publicSigns, setPublicSigns } = useChat();
 
   const { loading, messages } = useGetMessages();
   const { selectedChat } = useChat();
@@ -27,7 +26,6 @@ const Chat = () => {
 
         const newPublicKeys = { ...publicKeys, [selectedChat._id]: contentArr };
         setPublicKeys(newPublicKeys);
-        localStorage.setItem("cc-public-keys", JSON.stringify(newPublicKeys));
       };
 
       reader.onerror = () => {
@@ -51,7 +49,6 @@ const Chat = () => {
           [selectedChat._id]: contentArr,
         };
         setPublicSigns(newPublicSigns);
-        localStorage.setItem("cc-public-signs", JSON.stringify(newPublicSigns));
       };
 
       reader.onerror = () => {
@@ -69,20 +66,6 @@ const Chat = () => {
       lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
     }, 100);
   }, [messages]);
-
-  useEffect(() => {
-    const storedPublicKeys = JSON.parse(localStorage.getItem("cc-public-keys"));
-    if (storedPublicKeys) {
-      setPublicKeys(storedPublicKeys);
-    }
-
-    const storedPublicSigns = JSON.parse(
-      localStorage.getItem("cc-public-signs")
-    );
-    if (storedPublicSigns) {
-      setPublicSigns(storedPublicSigns);
-    }
-  }, []);
 
   return (
     <>

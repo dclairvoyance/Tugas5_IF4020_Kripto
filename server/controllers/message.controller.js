@@ -15,12 +15,30 @@ export const get = async (req, res) => {
       users: { $all: [senderId, receiverId], $size: 2 },
     }).populate("messages");
     if (!chat) {
-      res.status(200).json({ messages: [] });
+      res.status(200).json({ message: "Messages fetched", messages: [] });
     } else {
-      res.status(200).json({ messages: chat.messages });
+      res
+        .status(200)
+        .json({ message: "Messages fetched", messages: chat.messages });
     }
   } catch (error) {
     console.error(`Error in get messages controller: ${error.message}`);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const schnorr = (req, res) => {
+  try {
+    res.status(200).json({
+      message: "Schnorr fetched",
+      schnorr: {
+        p: global.p.toString(),
+        q: global.q.toString(),
+        alpha: global.alpha.toString(),
+      },
+    });
+  } catch (error) {
+    console.error(`Error in schnorr controller: ${error.message}`);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -34,7 +52,7 @@ export const send = async (req, res) => {
     const { encryptedBody } = req.body;
     const decrypted = hexToString(decrypt(encryptedBody, sharedKey.sharedKey));
     const parsed = JSON.parse(decrypted.replace(/Z*$/, ""));
-    const { message } = parsed;
+    const { message, signature } = parsed;
 
     const senderId = req.user._id;
 
@@ -53,6 +71,7 @@ export const send = async (req, res) => {
       senderId,
       receiverId,
       message,
+      signature,
     });
     chat.messages.push(newMessage._id);
     await Promise.all([chat.save(), newMessage.save()]);

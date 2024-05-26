@@ -1,13 +1,13 @@
 const p = BigInt("0xfffffffffffffffffffffffffffffffeffffffffffffffff");
 const a = BigInt("0xfffffffffffffffffffffffffffffffefffffffffffffffc");
-const b = BigInt("0x64210519e59c80e70fa7e9ab72243049feb8deecc146b9b1");
+// const b = BigInt("0x64210519e59c80e70fa7e9ab72243049feb8deecc146b9b1");
 const Gx = BigInt("0x188da80eb03090f67cbf20eb43a18800f4ff0afd82ff1012");
 const Gy = BigInt("0x07192b95ffc8da78631011ed6b24ddd573f977a11e794811");
 
 const modInverse = (k, p) => {
   if (k === 0n) throw new Error("Division by zero");
   if (k < 0n) return p - modInverse(-k, p);
-  
+
   let [s, old_s] = [0n, 1n];
   let [t, old_t] = [1n, 0n];
   let [r, old_r] = [p, k];
@@ -62,12 +62,12 @@ const calculateTuple = (asciiGroups) => {
     let bigInteger = 0n;
     for (let i = 0; i < group.length; i++) {
       let value = BigInt(group[group.length - 1 - i]);
-      bigInteger += value * (256n ** BigInt(i));
+      bigInteger += value * 256n ** BigInt(i);
     }
     bigIntegers.push(bigInteger);
   }
   return bigIntegers;
-}
+};
 
 const bigIntegerToAscii = (bigIntegers) => {
   let asciiValues = [];
@@ -81,10 +81,10 @@ const bigIntegerToAscii = (bigIntegers) => {
     asciiValues.push(asciiValue);
   }
   return asciiValues;
-}
+};
 
 export const encryptMessage = (text, Pb) => {
-  let asciiValues = Array.from(text).map(char => char.charCodeAt(0));
+  let asciiValues = Array.from(text).map((char) => char.charCodeAt(0));
   let block = 6;
   let k = 1086018370192340982370091274n;
 
@@ -113,7 +113,7 @@ export const encryptMessage = (text, Pb) => {
   }
 
   return resultEncrypt;
-}
+};
 
 export const decryptMessage = (encryptedText, nB) => {
   let resultDecrypt = [];
@@ -129,24 +129,24 @@ export const decryptMessage = (encryptedText, nB) => {
     resultArr = resultArr.concat(asciiValue);
   }
 
-  let messageArr = []
+  let messageArr = [];
   for (let arr of resultArr) {
     messageArr = messageArr.concat(arr);
   }
 
-  let message = messageArr.map(value => String.fromCharCode(value)).join('');
+  let message = messageArr.map((value) => String.fromCharCode(value)).join("");
   return message;
-}
+};
 
 export const generatePrivateKey = () => {
-  let result = '';
+  let result = "";
   for (let i = 0; i < 64; i++) {
     const digit = Math.floor(Math.random() * 10);
     result += digit;
   }
   return BigInt(result);
-}
+};
 
 export const generatePublicKey = (nB) => {
-  return pointMultiply([Gx,Gy],nB);
-}
+  return pointMultiply([Gx, Gy], nB);
+};

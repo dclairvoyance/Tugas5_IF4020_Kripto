@@ -27,6 +27,7 @@ const useLogout = () => {
       }
       localStorage.removeItem("cc-user");
       localStorage.removeItem("cc-public-keys");
+      localStorage.removeItem("cc-public-signs");
       localStorage.removeItem("cc-messages");
       localStorage.removeItem("cc-private-key");
       setAuthUser(null);

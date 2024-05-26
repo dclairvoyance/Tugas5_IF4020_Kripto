@@ -10,7 +10,7 @@ const FileInput = ({ handleOnChangeParent, fileName, isPublicExists }) => {
       >
         <div className="flex-col w-full my-auto p-1">
           <MdFileUpload className="mx-auto" size="24" color="#8697a0" />
-          <p className="text-xs whitespace-nowrap">
+          <p className="text-xs whitespace-nowrap text-[#8697a0]">
             {isPublicExists ? fileName + " found" : fileName + " upload"}
           </p>
         </div>

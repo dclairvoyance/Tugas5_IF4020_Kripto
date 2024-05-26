@@ -16,6 +16,14 @@ const messageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    signature: {
+      e: {
+        type: String,
+      },
+      y: {
+        type: String,
+      },
+    },
   },
   { timestamps: true }
 );

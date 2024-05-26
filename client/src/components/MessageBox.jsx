@@ -4,32 +4,60 @@ import { FaFileSignature } from "react-icons/fa6";
 import useSendMessage from "../hooks/useSendMessage";
 import useChat from "../stores/useChat";
 import toast from "react-hot-toast";
+import { generateSignature } from "../utils/schnorr";
 
 const MessageBox = () => {
   const [message, setMessage] = useState("");
-  const [signature, setSignature] = useState(false);
+  const [addSignature, setAddSignature] = useState(false);
 
   const { loading, sendMessage } = useSendMessage();
-  const { selectedChat, chats, setChats, newChat, setNewChat } = useChat();
+  const {
+    selectedChat,
+    chats,
+    setChats,
+    newChat,
+    setNewChat,
+    schnorr,
+    publicKeys,
+  } = useChat();
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!message) return;
 
     // sign here
-    const privateSign = JSON.parse(localStorage.getItem("cc-private-sign"));
-    if (signature && !privateSign) {
+    const { s } = JSON.parse(localStorage.getItem("cc-signature")) || {
+      s: null,
+      v: null,
+    };
+    if (addSignature && !s) {
       toast.error("Private key (signature) is missing");
       return;
     }
 
     // encrypt here
-    const publicKeys = JSON.parse(localStorage.getItem("cc-public-keys"));
     if (!publicKeys) {
       toast.error("Public key (encryption) is missing");
       return;
     }
-    await sendMessage(message, publicKeys[selectedChat._id]);
+
+    if (addSignature) {
+      const signature = generateSignature(
+        message,
+        BigInt(schnorr.p),
+        BigInt(schnorr.q),
+        BigInt(schnorr.alpha),
+        BigInt(s)
+      );
+      const signatureString = {
+        e: signature.e.toString(),
+        y: signature.y.toString(),
+      };
+      await sendMessage(message, signatureString, publicKeys[selectedChat._id]);
+    } else {
+      await sendMessage(message, null, publicKeys[selectedChat._id]);
+    }
+
     if (newChat) {
       setChats([...chats, selectedChat]);
       setNewChat(false);
@@ -40,7 +68,7 @@ const MessageBox = () => {
   useEffect(() => {
     if (selectedChat) {
       setMessage("");
-      setSignature(false);
+      setAddSignature(false);
     }
   }, [selectedChat]);
 
@@ -68,14 +96,14 @@ const MessageBox = () => {
         />
         <button
           className={`${
-            signature ? "bg-[#8697a0]" : "bg-[#f0f2f5]"
+            addSignature ? "bg-[#8697a0] dark:bg-[#2a3942]" : "bg-[#f0f2f5]"
           } rounded-md h-10 w-10 dark:bg-[#1f2c33] hover:border hover:border-[#8697a0] hover:dark:bg-[#2a3942] ml-3`}
-          onClick={() => setSignature(!signature)}
+          onClick={() => setAddSignature(!addSignature)}
         >
           {!loading ? (
             <FaFileSignature
               className={`${
-                signature ? "text-white" : "text-[#8697a0]"
+                addSignature ? "text-white" : "text-[#8697a0]"
               }  dark:text-[#aebac1] w-full`}
               size="1.5rem"
             />
